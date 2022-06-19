@@ -33,20 +33,43 @@
     };
     var player;
     var cursors;
+    var box;
+    var tree;
+    var pedra;
 
     var game = new Phaser.Game(config);
 
     function preload ()
     {
-        this.load.spritesheet('duda', 'imagens/duda2.png', { frameWidth: 32, frameHeight: 42 });
+        this.load.spritesheet('duda', 'imagens/duda.png', { frameWidth: 32, frameHeight: 42 });
         this.load.image('grass', 'imagens/Pixel_art_grass_image.png');
+        this.load.image('box', 'imagens/box.png');
+        this.load.image('tree', 'imagens/tree.png');
+        this.load.image('pedra', 'imagens/pedra.png');
     }
 
     function create ()
     {
-        this.add.image(300, 300, 'grass').setScale(1.9)
-        player = this.physics.add.sprite(100, 450, 'duda');
+        grass = this.add.image(300, 300, 'grass').setScale(1.9)
+        player = this.physics.add.sprite(300, 450, 'duda');
+        box = this.physics.add.image(150, 200, 'box').setScale(0.08)
+        pedra = this.physics.add.image(450, 200, 'pedra')
+        tree = this.physics.add.image(300, 200, 'tree')
 
+        frame_tree = this.physics.add.staticGroup({
+        key: 'tree',
+        frameQuantity: 90
+    });
+
+        Phaser.Actions.PlaceOnRectangle(frame_tree.getChildren(), new Phaser.Geom.Rectangle(25, 25, 550, 550));
+        frame_tree.refresh();
+        
+        this.physics.add.collider(player, box);
+        this.physics.add.collider(player, pedra);
+        this.physics.add.collider(player, tree);
+        this.physics.add.collider(player, frame_tree);
+        this.physics.add.collider(box, frame_tree);
+        
         this.anims.create({
             key: 'left',
             frames: this.anims.generateFrameNumbers('duda', { start: 0, end: 3 }),
@@ -82,15 +105,16 @@
             repeat: -1
         });
 
-
+        
         cursors = this.input.keyboard.createCursorKeys();
+           
     }
     function update() {
 
     const speed = 300;
     // Parar qualquer movimento anterior
     player.setVelocity(0);
-
+    
     // Movimento Horizontal
     if (cursors.left.isDown) {
         player.setVelocityX(-speed);
@@ -124,7 +148,7 @@
         player.anims.play("stop", true);
     }
     }
-    
+
     </script>
 
 </body>
