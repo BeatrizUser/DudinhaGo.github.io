@@ -35,7 +35,7 @@
     var cursors;
     var box;
     var tree;
-    var pedra;
+    var stone;
 
     var game = new Phaser.Game(config);
 
@@ -45,7 +45,7 @@
         this.load.image('grass', 'imagens/Pixel_art_grass_image.png');
         this.load.image('box', 'imagens/box.png');
         this.load.image('tree', 'imagens/tree.png');
-        this.load.image('pedra', 'imagens/pedra.png');
+        this.load.image('stone', 'imagens/stone.png');
     }
 
     function create ()
@@ -53,7 +53,7 @@
         grass = this.add.image(300, 300, 'grass').setScale(1.9)
         player = this.physics.add.sprite(300, 450, 'duda');
         box = this.physics.add.image(150, 200, 'box').setScale(0.08)
-        pedra = this.physics.add.image(450, 200, 'pedra')
+        stone = this.physics.add.image(450, 200, 'stone')
         tree = this.physics.add.image(300, 200, 'tree')
 
         frame_tree = this.physics.add.staticGroup({
@@ -64,11 +64,21 @@
         Phaser.Actions.PlaceOnRectangle(frame_tree.getChildren(), new Phaser.Geom.Rectangle(25, 25, 550, 550));
         frame_tree.refresh();
         
+        //COLISOES DO PLAYER (player)
         this.physics.add.collider(player, box);
-        this.physics.add.collider(player, pedra);
+        this.physics.add.collider(player, stone);
         this.physics.add.collider(player, tree);
         this.physics.add.collider(player, frame_tree);
+        //COLISOES DA CAIXA (box)
+        this.physics.add.collider(box, stone);
+        this.physics.add.collider(box, tree);
         this.physics.add.collider(box, frame_tree);
+        //COLISOES DA PEDRA (stone)
+        this.physics.add.collider(stone, tree);
+        this.physics.add.collider(stone, frame_tree);
+        //COLISOES DA ARVORES (tree)
+        this.physics.add.collider(tree, stone);
+        this.physics.add.collider(tree, frame_tree);
         
         this.anims.create({
             key: 'left',
